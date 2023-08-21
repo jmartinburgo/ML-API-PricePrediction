@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+</head>
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-6 offset-md-3">
+                <div class="card mt-5 shadow">
+                    <div class="card-body">
+                        <h4 class="text-center">Red Neuronal Pisos de Alquiler Valencia</h4>
+                    </div>
+                </div>
+                <div class="card mt-2 shadow">
+                    <div class="card-body">
+                        <label for="">M^2</label>
+                        <input type="number" class="form-control mb-3" id="m2">
+                        <label for="">N Habitaciones</label>
+                        <input type="number" class="form-control mb-3" id="hab">
+                        <label for="">N Plantas</label>
+                        <input type="number" class="form-control mb-3" id="planta">
+                        <label for="">Ascensor</label>
+                        <select name="" id="ascensor" class="form-control mb-3">
+                            <option disabled selected>Elige una opcion</option>
+                            <option value=0>No</option>
+                            <option value=1>Si</option>
+                        </select>
+                        <label for="">Exterior</label>
+                        <select name="" id="ext" class="form-control mb-3" >
+                            <option disabled selected>Elige una opcion</option>
+                            <option value=0>No</option>
+                            <option value=1>Si</option>
+                        </select>
+                        <label for="">Estado</label>
+                        <select name="" id="est" class="form-control mb-3" >
+                            <option disabled selected>Elige una opcion</option>
+                            <option value=0>No rehabilitado</option>
+                            <option value=1>Rehabilitado</option>
+                            <option value=2>Nuevo</option>
+                        </select>
+                        <label for="">Centrico</label>
+                        <select name="" id="cent" class="form-control mb-3" >
+                            <option disabled selected>Elige una opcion</option>
+                            <option value=0>No</option>
+                            <option value=1>Si</option>
+                        </select>
+                        <div class="d-flex">
+                            <button class="btn btn-primary" type="button" id="btn">Calcular precio</button>
+                            <h5 class="mx-5 mt-2" id="resultado"></h5>
+                        </div>                   
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+
+    <script>
+        var modelo = null;
+        // Cargamos modelo
+        (async() => {
+            console.log("Cargando el modelo...")
+            modelo = await tf.loadLayersModel("model.json");
+            console.log("Modelo cargado!")
+        })();
+
+        const btn=document.getElementById("btn");
+
+        btn.click= () => {
+            var m2= document.getElementById("m2").value;
+            var hab= document.getElementById("hab").value;
+            var planta= document.getElementById("planta").value;
+            var ascensor= document.getElementById("ascensor").value;
+            var ext= document.getElementById("ext").value;
+            var est= document.getElementById("est").value;
+            var cent= document.getElementById("cent").value;
+
+            if(modelo != null){
+                var tensor = tf.tensor2d([[0,parseInt(parseInt(m2),parseInt(hab),parseInt(planta),parseInt(ascensor),parseInt(ext),parseInt(est),parseInt(cent))]])
+                var prediccion= model.predict(tensor).dataSync();
+                prediccion= Math.round(prediccion,2)
+                document.getElementById("resultado").innerHTML = "Precio: " + prediccion + "Euros/mes";
+            }
+            else{
+                document.getElementById("resultado").innerHTML = "Intenta de nuevo en un rato..."   ;         }
+        }
+    </script>
+    
+</body>
+</html>
